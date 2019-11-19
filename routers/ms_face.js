@@ -7,7 +7,7 @@ const subscriptionKey = 'be2060a408de49fd87fb62d3532f3336';
 const detectUrl = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect';
 
 async function getMsFace(filename) {
-    const imageUrl = `https://face-similar.s3.ap-northeast-2.amazonaws.com/${filename}`;
+    const imageUrl = `https://face-similar.s3.ap-northeast-2.amazonaws.com/face/${filename}`;
     // Request parameters
     // const params = {
     //     'returnFaceId': 'true',
