@@ -2,7 +2,7 @@
 
 const request = require('request');
 
-const subscriptionKey = 'be2060a408de49fd87fb62d3532f3336';
+const subscriptionKey = 'subscriptionKey';
 const similarUrl = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/verify';
 
 async function getMsSimilar(faceId) {
