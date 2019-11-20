@@ -3,7 +3,7 @@
 const request = require('request');
 const path = require('path');
 
-const subscriptionKey = 'be2060a408de49fd87fb62d3532f3336';
+const subscriptionKey = 'subscriptionKey';
 const detectUrl = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect';
 
 async function getMsFace(filename) {
