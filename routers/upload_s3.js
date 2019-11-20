@@ -4,8 +4,8 @@ const fs = require('fs');
 
 async function uploadS3(localImage) {
     const s3 = new AWS.S3({
-        accessKeyId: "AKIARW4GNNIAFQ4NMG7N",
-        secretAccessKey: "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",
+        accessKeyId: "accessKeyId",
+        secretAccessKey: "secretAccessKey",
         region: 'ap-northeast-2'
     });
 
