@@ -1,8 +1,9 @@
 const request = require('request');
 const fs = require("fs");
+const config = require("../common/api_config");
 
-const client_id = '4aCHZGSqgVu3HnBPiX2v';
-const client_secret = '2fCj7pjRQs';
+const client_id = config.clova_client_id;
+const client_secret = config.clova_client_secret;
 
 async function getClovaFace(filename) {
   const api_url_celebrity = 'https://openapi.naver.com/v1/vision/celebrity'; // 유명인 인식
@@ -10,7 +11,7 @@ async function getClovaFace(filename) {
 
   const _formData = {
     image: 'image',
-    image: fs.createReadStream(`./upload/face/${filename}`) // FILE 이름
+    image: fs.createReadStream(filename) // FILE 이름
   };
   const options = {
     url: api_url_celebrity, formData: _formData,

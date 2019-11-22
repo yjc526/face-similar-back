@@ -1,8 +1,9 @@
 'use strict';
 
 const request = require('request');
+const config = require("../common/api_config");
 
-const subscriptionKey = 'be2060a408de49fd87fb62d3532f3336';
+const subscriptionKey = config.subscriptionKey;
 const similarUrl = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/verify';
 
 async function getMsSimilar(faceId) {
@@ -26,8 +27,6 @@ async function getMsSimilar(faceId) {
             if (err) {
                 reject(err);
             } else {
-                console.log("body: ",body);
-                // const similar = JSON.parse(body)
                 resolve(body);
             }
         });

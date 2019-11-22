@@ -2,12 +2,12 @@
 
 const request = require('request');
 const path = require('path');
+const config = require("../common/api_config");
 
-const subscriptionKey = 'be2060a408de49fd87fb62d3532f3336';
+const subscriptionKey = config.subscriptionKey;
 const detectUrl = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect';
 
-async function getMsFace(filename) {
-    const imageUrl = `https://face-similar.s3.ap-northeast-2.amazonaws.com/face/${filename}`;
+async function getMsFace(s3_path) {
     // Request parameters
     // const params = {
     //     'returnFaceId': 'true',
@@ -18,13 +18,14 @@ async function getMsFace(filename) {
     const params = {
         'returnFaceId': 'true',
         'returnFaceLandmarks': 'false',
+        "faceRectangle": "true",
         'returnFaceAttributes': 'age,gender,smile,emotion,hair'
     };
 
     const options = {
         uri: detectUrl,
         qs: params,
-        body: '{"url": ' + '"' + imageUrl + '"}',
+        body: '{"url": ' + '"' + s3_path + '"}',
         headers: {
             'Content-Type': 'application/json',
             'Ocp-Apim-Subscription-Key': subscriptionKey

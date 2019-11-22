@@ -7,55 +7,60 @@ const MsFace = require("./ms_face");
 const MsSimilar = require("./ms_similar");
 const UploadLocal = require("./upload_local");
 const UploadS3 = require("./upload_s3");
+const CalcScore = require("./calc_score");
+const CutImage = require("./cut_image");
 
 
 router.post("/", async (req, res, next) => {
 
-  let path = null;
-
   // FormData의 경우 req로 부터 데이터를 얻을수 없다.
   // upload 핸들러(multer)를 통해서 데이터를 읽을 수 있다
-  await UploadLocal(req, res, async (err) => {
-    if (err instanceof multer.MulterError) {
-      return next(err);
-    } else if (err) {
-      return next(err);
-    }
-    console.log("저장된 파일정보 ", req.file);
-    console.log("저장파일명 : " + req.file.filename);
+  const pathObj = new Promise((resolve, reject) => {
+    UploadLocal(req, res, async (err) => {
+      if (err instanceof multer.MulterError) {
+        reject(err);
+      } else if (err) {
+        reject(err);
+      } else {
+        const localPath = `./upload/face/${req.file.filename}`;
+        const localImage = {
+          "path": localPath,
+          "mimetype": req.file.mimetype
+        }
 
-    const localPath = `./upload/face/${req.file.filename}`;
-    const localImage = {
-      "path": localPath,
-      "mimetype": req.file.mimetype
-    }
-    const UploadS3Result = await UploadS3(localImage);
-    console.log("UploadS3Result: ", UploadS3Result);
-    path = {
-      "local": localPath,
-      "s3": UploadS3Result.fileInfo.Location
-    }
-    console.log("path1: ", path);
-  });
+        const UploadS3Result = await UploadS3(localImage);
+        obj = {
+          "filename": req.file.filename,
+          "local": localPath,
+          "s3": UploadS3Result
+        }
+      }
+      resolve(obj);
+    });
+  })
+  const path = await pathObj;
 
-  console.log("path2: ", path);
-  const clovaResult = await ClovaFace(path.local);
   const msFaceResult = await MsFace(path.s3);
-
-  const parsedClova = JSON.parse(clovaResult);
   const parsedFace = JSON.parse(msFaceResult);
-  console.log(parsedClova.faces);
-  console.log("parsedFace: ", parsedFace);
 
   const faceId = [];
+  const faceRectangle = {
+    "male": null,
+    "female": null
+  };
 
-  const resultData = {
-    "cohesion": null,
-    "male": {
+  const result = {
+    "score": {  // 점수 (잘어울리는, 남자, 여자)
+      "similar": null,
+      "male": null,
+      "female": null
+    },
+    "cohesion": null, // 비슷한 수치
+    "male": { // 남자 얼굴 정보
       "faceCount": null,
       "info": null
     },
-    "female": {
+    "female": { // 여자 얼굴 정보 
       "faceCount": null,
       "info": null
     }
@@ -65,7 +70,6 @@ router.post("/", async (req, res, next) => {
     const faceAtt = parsedFace[x].faceAttributes;
     faceId.push(parsedFace[x].faceId);
     const gender = faceAtt.gender;
-    const faceCount = parsedClova.info.faceCount;
     const age = faceAtt.age;
     const bald = faceAtt.hair.bald;
     const smile = faceAtt.smile;
@@ -82,27 +86,40 @@ router.post("/", async (req, res, next) => {
       age,
       bald,
       smile,
-      emotion: { 1: emotion[0], 2: emotion[1] },
+      emotion: { "first": emotion[0], "second": emotion[1] },
     }
 
     if (gender == "male") {
-      resultData.male.faceCount = faceCount;
-      resultData.male.info = info;
+      faceRectangle.male = parsedFace[x].faceRectangle;
+      result.male.info = info;
     } else {
-      resultData.female.faceCount = faceCount;
-      resultData.female.info = info;
+      faceRectangle.female = parsedFace[x].faceRectangle;
+      result.female.info = info;
     }
-
   };
 
+  const cutImagePath = await CutImage(path.filename, faceRectangle);
+  console.log("cutImagePath", cutImagePath);
+
+  const clovaMaleResult = await ClovaFace(cutImagePath.male);
+  const parsedMaleClova = JSON.parse(clovaMaleResult);
+
+  const clovaFemaleResult = await ClovaFace(cutImagePath.female);
+  const parsedFemaleClova = JSON.parse(clovaFemaleResult);
+
+  result.male.faceCount = parsedMaleClova.info.faceCount;
+  result.female.faceCount = parsedFemaleClova.info.faceCount;
+  console.log("parsedMaleClova: ", parsedMaleClova.faces);
+  console.log("parsedFemaleClova : ", parsedFemaleClova.faces);
+
   const parsedSimilar = await MsSimilar(faceId);
-  const cohesion = parsedSimilar.confidence;
-  resultData.cohesion = cohesion;
+  result.cohesion = parsedSimilar.confidence;
 
-  console.log(resultData);
+  result.score = CalcScore(result);
 
-  res.json({ result: true, resultData });
+  console.log(result);
 
+  res.json({ status: true, result: result });
 });
 
 module.exports = router;
