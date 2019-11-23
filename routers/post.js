@@ -9,6 +9,7 @@ const UploadLocal = require("./upload_local");
 const UploadS3 = require("./upload_s3");
 const CalcScore = require("./calc_score");
 const CutImage = require("./cut_image");
+const Rank = require("./rank");
 
 
 router.post("/", async (req, res, next) => {
@@ -50,11 +51,8 @@ router.post("/", async (req, res, next) => {
   };
 
   const result = {
-    "score": {  // 점수 (잘어울리는, 남자, 여자)
-      "similar": null,
-      "male": null,
-      "female": null
-    },
+    "score": null,  // 점수 (잘어울리는, 남자, 여자)
+    "rank": null,
     "cohesion": null, // 비슷한 수치
     "male": { // 남자 얼굴 정보
       "faceCount": null,
@@ -99,7 +97,6 @@ router.post("/", async (req, res, next) => {
   };
 
   const cutImagePath = await CutImage(path.filename, faceRectangle);
-  console.log("cutImagePath", cutImagePath);
 
   const clovaMaleResult = await ClovaFace(cutImagePath.male);
   const parsedMaleClova = JSON.parse(clovaMaleResult);
@@ -116,6 +113,7 @@ router.post("/", async (req, res, next) => {
   result.cohesion = parsedSimilar.confidence;
 
   result.score = CalcScore(result);
+  result.rank = Rank(result);
 
   console.log(result);
 

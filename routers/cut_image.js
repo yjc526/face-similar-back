@@ -6,10 +6,10 @@ const cutImage = async (filename, faceRectangle) => {
     const outputFemale = `upload/cut_female/${filename}`;
 
     await sharp(original).extract({
-        width: faceRectangle.male.width + 40,
-        height: faceRectangle.male.height + 40,
-        left: faceRectangle.male.left - 20,
-        top: faceRectangle.male.top - 20
+        width: faceRectangle.male.width,
+        height: faceRectangle.male.height,
+        left: faceRectangle.male.left,
+        top: faceRectangle.male.top
     }).toFile(outputMale)
         .then(function (new_file_info) {
             console.log("Image cropped and saved");
@@ -19,10 +19,10 @@ const cutImage = async (filename, faceRectangle) => {
         });
 
     await sharp(original).extract({
-        width: faceRectangle.female.width + 20,
-        height: faceRectangle.female.height + 20,
-        left: faceRectangle.female.left - 10,
-        top: faceRectangle.female.top - 10
+        width: faceRectangle.female.width,
+        height: faceRectangle.female.height,
+        left: faceRectangle.female.left,
+        top: faceRectangle.female.top
     }).toFile(outputFemale)
         .then(function (new_file_info) {
             console.log("Image cropped and saved");

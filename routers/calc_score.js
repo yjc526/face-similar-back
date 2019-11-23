@@ -24,20 +24,20 @@ function calc_score(result) {
         }
     }
 
-    score.similar = cohesion_point + age_point + emotion_point;
+    score.similar = 40 + cohesion_point + age_point + emotion_point;
     /////////////////////////////  similar score end  /////////////////////////////
 
 
 
     /////////////////////////////  male/female score start  /////////////////////////////
-    score.male = 20 + result.male.faceCount * 2 + result.male.info.smile * 10 -
-        result.male.info.age - result.male.info.bald * 10
+    score.male = 100 + result.male.faceCount * 5 + result.male.info.smile * 5 -
+        result.male.info.age * 1.5 - result.male.info.bald * 30
 
-    score.female = 20 + result.female.faceCount * 2 + result.female.info.smile * 10 -
-        result.female.info.age - result.female.info.bald * 10
+    score.female = 100 + result.female.faceCount * 5 + result.female.info.smile * 5 -
+        result.female.info.age * 1.5 - result.female.info.bald * 30
     /////////////////////////////  male/female score end  /////////////////////////////
 
-    
+
     return score;
 }
 
