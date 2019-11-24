@@ -112,8 +112,8 @@ router.post("/", async (req, res, next) => {
   const parsedSimilar = await MsSimilar(faceId);
   result.cohesion = parsedSimilar.confidence;
 
-  result.score = CalcScore(result);
-  result.rank = Rank(result);
+  result.score =  CalcScore(result);
+  result.rank = await Rank(result);
 
   console.log(result);
 

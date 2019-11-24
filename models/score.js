@@ -7,6 +7,6 @@ const scoreSchema = new Schema({
   female: Number
 });
 
-const Score = model("Similar", scoreSchema);
+const Score = model("score", scoreSchema);
 
 module.exports = Score
