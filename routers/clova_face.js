@@ -2,8 +2,8 @@ const request = require('request');
 const fs = require("fs");
 const config = require("../common/api_config");
 
-const client_id = config.clova_client_id;
-const client_secret = config.clova_client_secret;
+const client_id = config.naver_client_id;
+const client_secret = config.naver_client_secret;
 
 async function getClovaFace(filename) {
   const api_url_celebrity = 'https://openapi.naver.com/v1/vision/celebrity'; // 유명인 인식
@@ -24,6 +24,7 @@ async function getClovaFace(filename) {
         console.log('Error: ', error);
         reject(error);
       } else {
+        console.log("body ",body);
         resolve(body);
       }
     });

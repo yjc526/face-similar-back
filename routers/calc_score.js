@@ -6,7 +6,7 @@ function calc_score(result) {
     let age_point = 0;
     let emotion_point = 0;
 
-    const age_gap = Math.abs(result.male.info.age - result.female.info.age);
+    const age_gap = Math.abs(result.info.male.age - result.info.female.age);
     if (age_gap < 5) {
         age_point = 7;
     } else if (age_gap < 10) {
@@ -14,8 +14,8 @@ function calc_score(result) {
     }
 
 
-    if (result.male.info.emotion.first.emotion == result.female.info.emotion.first.emotion) {
-        if (result.male.info.emotion.second.emotion == result.female.info.emotion.second.emotion) {
+    if (result.info.male.emotion.first.emotion == result.info.female.emotion.first.emotion) {
+        if (result.info.male.emotion.second.emotion == result.info.female.emotion.second.emotion) {
             emotion_point = 4
         } else {
             emotion_point = 2
@@ -28,11 +28,11 @@ function calc_score(result) {
 
 
     /////////////////////////////  male/female score start  /////////////////////////////
-    score.male = Math.round((100 + result.male.faceCount * 5 + result.male.info.smile * 5 -
-        result.male.info.age * 1.5 - result.male.info.bald * 30)*100)/100;
+    score.male = Math.round((100 + result.info.male.faceCount * 5 + result.info.male.smile * 5 -
+        result.info.male.age * 1.5 - result.info.male.bald * 20)*100)/100;
 
-    score.female = Math.round((100 + result.female.faceCount * 5 + result.female.info.smile * 5 -
-        result.female.info.age * 1.5 - result.female.info.bald * 30)*100)/100;
+    score.female = Math.round((100 + result.info.female.faceCount * 5 + result.info.female.smile * 5 -
+        result.info.female.age * 1.5 - result.info.female.bald * 20)*100)/100;
     /////////////////////////////  male/female score end  /////////////////////////////
 
 
