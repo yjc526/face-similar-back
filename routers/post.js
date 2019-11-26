@@ -11,6 +11,7 @@ const CalcScore = require("./calc_score");
 const CutImage = require("./cut_image");
 const Rank = require("./rank");
 const SearchImage = require("./search_img");
+const FileDelete = require("./file_delete");
 
 
 router.post("/", async (req, res, next) => {
@@ -152,13 +153,13 @@ router.post("/", async (req, res, next) => {
       //naver search API 결과 - 유명인 이름으로 네이버에서 이미지 검색 후 이미지 URL 리턴
       if (parsedMaleClova.faces[0]) {
         result.info.male.celebrity.name = parsedMaleClova.faces[0].celebrity.value;
-        console.log(" result.info.male.celebrity.name ",  result.info.male.celebrity.name)
+        console.log(" result.info.male.celebrity.name ", result.info.male.celebrity.name)
         result.info.male.celebrity.url = await SearchImage(result.info.male.celebrity.name);
       }
 
       if (parsedFemaleClova.faces[0]) {
         result.info.female.celebrity.name = parsedFemaleClova.faces[0].celebrity.value;
-        console.log("result.info.female.celebrity.name ",result.info.female.celebrity.name)
+        console.log("result.info.female.celebrity.name ", result.info.female.celebrity.name)
         result.info.female.celebrity.url = await SearchImage(result.info.female.celebrity.name);
       }
 
@@ -169,6 +170,8 @@ router.post("/", async (req, res, next) => {
       result.rank = await Rank(result);
 
       console.log(result);
+      
+      FileDelete(path.filename);
 
       res.json({ status: true, result: result });
     }

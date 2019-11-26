@@ -3,7 +3,7 @@
 const request = require('request');
 const config = require("../common/api_config");
 
-const subscriptionKey = config.subscriptionKey;
+const subscriptionKey = process.env.SUBSCRIPTION_KEY || config.subscriptionKey;
 const similarUrl = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/verify';
 
 async function getMsSimilar(faceId) {

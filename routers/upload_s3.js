@@ -1,7 +1,6 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
-const config = require("../common/api_config");
 
 const credentials = new AWS.SharedIniFileCredentials({ profile: 'YJC' });
 AWS.config.credentials = credentials;

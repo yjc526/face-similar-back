@@ -4,7 +4,7 @@ const request = require('request');
 const path = require('path');
 const config = require("../common/api_config");
 
-const subscriptionKey = config.subscriptionKey;
+const subscriptionKey = process.env.SUBSCRIPTION_KEY ||config.subscriptionKey;
 const detectUrl = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect';
 
 async function getMsFace(s3_path) {

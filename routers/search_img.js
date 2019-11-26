@@ -3,8 +3,8 @@ const request = require('request')
 const config = require("../common/api_config");
 
 async function searchImage(name) {
-    const NAVER_CLIENT_ID = config.naver_client_id;
-    const NAVER_CLIENT_SECRET = config.naver_client_secret;
+    const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID || config.naver_client_id;
+    const NAVER_CLIENT_SECRET =  process.env.NAVER_CLIENT_SECRET || config.naver_client_secret;
     const option = {
         query: `${name}`, //이미지 검색 텍스트
         start: 1, //검색 시작 위치
